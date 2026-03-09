@@ -1,0 +1,297 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Tech2etc Ecommerce Tutorial</title>
+    <link
+      rel="stylesheet"
+      href="https://pro.fontawesome.com/releases/v5.10.0/css/all.css"
+    />
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/7.0.1/css/all.min.css"
+      integrity="sha512-2SwdPD6INVrV/lHTZbO2nodKhrnDdJK9/kg2XD1r9uGqPo1cUbujc+IYdlYdEErWNu69gVcYgdxlmVmzTWnetw=="
+      crossorigin="anonymous"
+      referrerpolicy="no-referrer"
+    />
+    <link rel="stylesheet" href="cart.css" />
+  </head>
+
+  <body>
+      <section id="header">
+<a href="#"><img src="img/logo.png" class="logo" alt="" /></a>
+
+<div>
+<ul id="navbar">
+<li><a href="index.html">Home</a></li>
+<li><a href="shop.html">Shop</a></li>
+<li><a href="blog.html">Blog</a></li>
+<li><a href="about.html">About</a></li>
+<li><a href="contact.html">Contact</a></li>
+<li>
+<a class="active" href="cart.html"><i class="fa-solid fa-bag-shopping"></i></a>
+</li>
+
+<a href="#" id="close"><i class="far fa-times"></i></a>
+
+</ul>
+</div>
+
+<div id="mobile">
+<i id="bar" class="fas fa-outdent"></i>
+</div>
+
+</section>
+
+    <section id="page-header" class="about-header">
+     <h2 style="text-align:center">Your Cart</h2>
+
+<table border="1" width="80%" align="center">
+<thead>
+<tr>
+<th>Image</th>
+<th>Product</th>
+<th>Price</th>
+<th>Qty</th>
+<th>Total</th>
+<th>Action</th>
+</tr>
+</thead>
+
+<tbody id="cartItems"></tbody>
+
+</table>
+
+<h2 style="text-align:center">
+Total: Rs <span id="grandTotal">0</span>
+</h2>
+
+<div style="text-align:center">
+<button onclick="checkout()">Checkout</button>
+<h2 style="text-align:center;margin-top:40px;">Your Orders</h2>
+
+<div id="orderHistory"></div>
+</div>
+    </section>
+
+    <footer class="footer">
+      <div class="footer-container">
+        <div class="footer-col">
+          <img src="img/logo.png" class="logo" />
+
+          <h4>Contact</h4>
+          <p>
+            <strong>Address:</strong> 562 Wellington Road, Street 32, San
+            Francisco
+          </p>
+          <p><strong>Phone:</strong> +01 2222 365 / (+91) 01 2345 6789</p>
+          <p><strong>Hours:</strong> 10:00 - 18:00, Mon - Sat</p>
+
+          <h4>Follow Us</h4>
+
+          <div class="social">
+            <i class="fab fa-facebook-f"></i>
+            <i class="fab fa-twitter"></i>
+            <i class="fab fa-instagram"></i>
+            <i class="fab fa-pinterest"></i>
+            <i class="fab fa-youtube"></i>
+          </div>
+        </div>
+
+        <div class="footer-col">
+          <h4>About</h4>
+
+          <a href="#">About Us</a>
+          <a href="#">Delivery Information</a>
+          <a href="#">Privacy Policy</a>
+          <a href="#">Terms & Conditions</a>
+          <a href="#">Contact Us</a>
+        </div>
+
+        <div class="footer-col">
+          <h4>My Account</h4>
+
+          <a href="#">Sign In</a>
+          <a href="#">View Cart</a>
+          <a href="#">My Wishlist</a>
+          <a href="#">Track My Order</a>
+          <a href="#">Help</a>
+        </div>
+
+        <div class="footer-col install">
+          <h4>Install App</h4>
+          <p>From App Store or Google Play</p>
+
+          <div class="app">
+            <img src="img/pay/app.jpg" />
+            <img src="img/pay/play.jpg" />
+          </div>
+        </div>
+      </div>
+    </footer>
+   <script>
+
+     const bar = document.getElementById("bar");
+const nav = document.getElementById("navbar");
+const close = document.getElementById("close");
+
+if (bar) {
+  bar.addEventListener("click", () => {
+    nav.classList.add("active");
+    bar.style.display = "none";   // hamburger hide
+  });
+}
+
+if (close) {
+  close.addEventListener("click", () => {
+    nav.classList.remove("active");
+    bar.style.display = "block";  // hamburger show again
+  });
+}
+
+var cart = JSON.parse(localStorage.getItem("cart")) || [];
+var cartItems = document.getElementById("cartItems");
+
+function displayCart(){
+
+cartItems.innerHTML = "";
+
+var grandTotal = 0;
+
+cart.forEach(function(item,index){
+
+var total = item.price * item.qty;
+
+grandTotal += total;
+
+var row = document.createElement("tr");
+
+row.innerHTML = `
+<td><img src="${item.image}" width="70"></td>
+<td>${item.name}</td>
+<td>Rs.${item.price}</td>
+
+<td>
+<button onclick="decreaseQty(${index})">-</button>
+${item.qty}
+<button onclick="increaseQty(${index})">+</button>
+</td>
+
+<td>Rs.${total}</td>
+
+<td>
+<button onclick="removeItem(${index})">Remove</button>
+<button onclick="addWishlist(${index})">Wishlist</button>
+</td>
+`;
+
+cartItems.appendChild(row);
+
+});
+
+document.getElementById("grandTotal").innerText = grandTotal;
+
+localStorage.setItem("cart", JSON.stringify(cart));
+
+}
+
+
+/* REMOVE ITEM */
+
+function removeItem(index){
+
+cart.splice(index,1);
+
+displayCart();
+
+}
+
+
+/* INCREASE QTY */
+
+function increaseQty(index){
+
+cart[index].qty++;
+
+displayCart();
+
+}
+
+
+/* DECREASE QTY */
+
+function decreaseQty(index){
+
+if(cart[index].qty > 1){
+cart[index].qty--;
+}
+
+displayCart();
+
+}
+
+
+/* ADD WISHLIST */
+
+function addWishlist(index){
+
+var wishlist = JSON.parse(localStorage.getItem("wishlist")) || [];
+
+wishlist.push(cart[index]);
+
+localStorage.setItem("wishlist",JSON.stringify(wishlist));
+
+alert("Added to Wishlist");
+
+}
+
+
+/* CHECKOUT */
+
+function checkout(){
+
+if(cart.length === 0){
+
+alert("Cart is Empty");
+
+}else{
+
+window.location.href="checkout.html";
+
+}
+
+}
+var orders = JSON.parse(localStorage.getItem("orders")) || [];
+
+var orderHistory = document.getElementById("orderHistory");
+
+orders.forEach(function(order){
+
+var div = document.createElement("div");
+
+div.style.background="white";
+div.style.padding="15px";
+div.style.margin="20px";
+
+div.innerHTML = `<h4>Order Date: ${order.date}</h4>`;
+
+order.items.forEach(function(item){
+
+div.innerHTML += `
+<p>${item.name} - ${item.qty} x Rs.${item.price}</p>
+`;
+
+});
+
+orderHistory.appendChild(div);
+
+});
+
+
+displayCart();
+
+</script>
+  </body>
+</html>

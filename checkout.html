@@ -1,0 +1,218 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<title>Checkout</title>
+
+<style>
+
+*{
+margin:0;
+padding:0;
+box-sizing:border-box;
+font-family:Arial;
+}
+
+body{
+background:#f5f5f5;
+padding:40px;
+}
+
+.checkout-container{
+display:grid;
+grid-template-columns:2fr 1fr;
+gap:30px;
+max-width:1100px;
+margin:auto;
+}
+
+.box{
+background:white;
+padding:25px;
+border-radius:10px;
+box-shadow:0 5px 15px rgba(0,0,0,0.1);
+}
+
+h2{
+margin-bottom:20px;
+}
+
+input,select{
+width:100%;
+padding:10px;
+margin:8px 0;
+border:1px solid #ccc;
+border-radius:5px;
+}
+
+button{
+width:100%;
+padding:12px;
+background:#088178;
+border:none;
+color:white;
+font-size:16px;
+cursor:pointer;
+border-radius:5px;
+}
+
+button:hover{
+background:#066e66;
+}
+
+.order-item{
+display:flex;
+justify-content:space-between;
+margin-bottom:10px;
+}
+
+.total{
+font-size:18px;
+font-weight:bold;
+margin-top:10px;
+}
+
+/* PAYMENT */
+
+.payment-method{
+margin:10px 0;
+}
+
+/* MOBILE */
+
+@media(max-width:768px){
+
+.checkout-container{
+grid-template-columns:1fr;
+}
+
+}
+
+</style>
+
+</head>
+
+<body>
+
+<h1 style="text-align:center;margin-bottom:30px;">Checkout</h1>
+
+<div class="checkout-container">
+
+    <div class="box">
+
+<h2>Your Order</h2>
+
+<div id="orderItems"></div>
+
+<hr>
+
+<p class="total">
+Total: Rs <span id="grandTotal">0</span>
+</p>
+
+</div>
+<!-- SHIPPING -->
+
+<div class="box">
+
+<h2>Shipping Details</h2>
+
+<input type="text" placeholder="Full Name" required>
+
+<input type="text" placeholder="Address" required>
+
+<input type="text" placeholder="City" required>
+
+<input type="text" placeholder="Pincode" required>
+
+<input type="text" placeholder="Phone Number" required>
+
+<h2>Payment Method</h2>
+
+<div class="payment-method">
+<input type="radio" name="payment" checked> Cash on Delivery
+</div>
+
+<div class="payment-method">
+<input type="radio" name="payment"> UPI
+</div>
+
+<div class="payment-method">
+<input type="radio" name="payment"> Credit / Debit Card
+</div>
+
+<button onclick="placeOrder()">Place Order</button>
+
+</div>
+
+
+<!-- ORDER SUMMARY -->
+
+</div>
+
+
+<script>
+
+var cart = JSON.parse(localStorage.getItem("cart")) || [];
+
+var orderItems = document.getElementById("orderItems");
+
+var total = 0;
+
+cart.forEach(function(item){
+
+var itemTotal = item.price * item.qty;
+
+total += itemTotal;
+
+orderItems.innerHTML += `
+<div class="order-item">
+<span>${item.name} x ${item.qty}</span>
+<span>Rs.${itemTotal}</span>
+</div>
+`;
+
+});
+
+document.getElementById("grandTotal").innerText = total;
+
+
+
+function placeOrder(){
+
+var cart = JSON.parse(localStorage.getItem("cart")) || [];
+
+if(cart.length === 0){
+alert("Cart is Empty");
+return;
+}
+
+/* Save order */
+
+var orders = JSON.parse(localStorage.getItem("orders")) || [];
+
+orders.push({
+items: cart,
+date: new Date().toLocaleString()
+});
+
+localStorage.setItem("orders", JSON.stringify(orders));
+
+/* clear cart */
+
+localStorage.removeItem("cart");
+
+alert("🎉 Order placed successfully!");
+
+window.location.href="cart.html";
+
+}
+
+</script>
+
+</body>
+
+</html>
